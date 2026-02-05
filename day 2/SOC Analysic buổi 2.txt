@@ -1,0 +1,71 @@
+          SOC Analysic buổi 2
+CẤU TRÚC SECURITY ALTER CÓ 7 TRƯỜNG:
+
+
+
+- Tên alter/ rule / lí do của nó
+2_ Source(user host, IP, endpoint, server, ....)
+3_ Timestamp( lúc nào, có liên quan đến even khác ko)
+4_ Action(allowed, blocked, success/fail)
+5_ Severity( critical,high,medium,medium,low,informational,...)
+6_ Artifact/IOC(URL, domain, hash, process, mailbox,...)
+7_ Context(asset quan trọng, user VIP, có tiền lệ
+
+
+Example: note - Alter time là của thông báo
+              - Des ở đây là login vào đâu chứ ko phải IP  => tùy lúc
+              -DĐọc kĩ thông báo   "in Hà Nội"
+
+
+---------------------//---------------------------------------------------|
+ 
+TRUE POSITIVE
+
+-Đây là cảnh báo that, cần thực hiện, có bằng chứng that => cách ly nó / escale nó lên trên
+
+Example: note - THầy gặp trang báo nổi tiếngở VN
+              - Chuyển sang quyền cao khi chỉ có quyền user
+              - Chạy cmd/powershell từ w3wp.exe  ===> chưa hiểu, tìm hiểu vì sao
+              - Server ISS tự mở calculator, notepad,,    ==> chưa hiểu
+
+
+FALSE POSITIVE
+
+- Máy  user nhưng báo brute force attack
+- User dùng VPN => IP i tùm lum  , cảnh báo giả, cần xác minh với
+
+##ở đây không  đoán mò  Alter vì dễ dính bẫy  => check kĩ với User, IT admin
+
+------------------------------//-------------------------------------------|
+
+LAB
+
+Log Managenent:   ELK, search log    => tool nào ko quan trọng, tư duy mới quan trọng
+Endpoint: máy, type , termina, network
+Email: search, analysics, attachment, nội dung, email header, SPF des
+Case: riêng
+Threat intelligence: chung cho cả lớp: check virus total, interface: IP, domain, hash: MD5 ,IOC, tại sao status : Suspilios hay Macilious
+Network Security: firewall, checkpoint, palo alto
+
+
+virus, window Defender
+  ----------------------------------------//-------------------------------|
+
+Case 1 : IP 94.159.113.15    Russia
+   - Check kĩ IP macilious nhưng false positive
+   - Check Virus total > community xem họ nói gì
+
+SOC 101
+        câu 5: search IP hay account    => search ( Log Management)
+               - log vào  change mail
+               - Search document ......tên tool + audit log
+        câu 6: email search account  => map time login  9h15, 16, 17  có attachment  => gửi tiền gấp
+               - SHA256: trên virus total  => macilious
+               - sent
+        câu 7 : 3 email
+               -
+        câu 8 : True positive
+        câu 9 : hành động cách ly ngay lập tức  => reset
+                - Không disable vì ảnh hưởng business
+      Comfirmed hacked login form Russia, found 3 macilious, outbound email (macilious attachment) -to<....@mail.com)
+Resset password & revoked sessions
