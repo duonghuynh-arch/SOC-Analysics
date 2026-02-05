@@ -45,8 +45,22 @@ index=finova_web uri="* OR * 1=1 *"
 #### 6. Detection Principles Overview
 #### 7. Những điểm nút quan trọng
 #### LAB Splunk 
-##### bài 1:
-**Bước 1 – Truy vấn để khám phát dữ liệu Web**
+##### USE CASE 1 – WEB ABUSE / SQL INJECTION
+- Bối cảnh:
+Team Web của FINOVA báo cáo:
+
+ “Website vẫn hoạt động bình thường, nhưng chúng tôi thấy một số request lạ trong log. Không giống scan tự động, có vẻ là thử thủ công.”
+
+---
+
+###### Dấu vết trong log
+- URL chứa các ký tự **SQL Injection phổ biến**, ví dụ:
+    - %27 (dấu ')
+    - %20OR%201%3D1  ( OR 1=1)
+- Các request này:
+    - Trả về HTTP status **200**
+    - Lặp lại nhiều lần từ **cùng một IP**
+**Bước 1 – Truy vấn để khám phá dữ liệu Web**
 
 ```latex
 index=finova_web
@@ -58,4 +72,46 @@ index=finova_web
 index=finova_web
 | stats count by useragent
 ```
-![truy vấn khám phá](picture/day9_1.png)
+**Bước 2 - Thu hẹp hành vi**
+![truy vấn khám phá ](picture/day9_1.png)
+-  Chỉ tập trung vào request có dấu hiệu SQL Injection:
+index=finova_web uri="* OR *"
+
+**Bước 3 - Kêt hợp hành vi + Ngưỡng**
+
+index=finova_web 
+| eval uri=urldecode(uri) 
+| search uri="*OR 1=1*" 
+| stats count by clientip
+![ip xuát hiện nhiều lần](picture/day9_3.png)
+**Bước 4 - Lưu thành Alter duong.huynh**
+
+![alter1luu](picture/day9_2.png)
+
+##### **USE CASE 2 – SSH BRUTE FORCE**
+ **Bối cảnh**
+
+SOC phát hiện:
+
+- Nhiều login thất bại
+- Chưa rõ là người dùng thật hay attack
+
+---
+
+**Dấu vết trong log**
+
+- Failed password
+- Cùng IP → nhiều user khác nhau
+- Có khoảng nghỉ giữa các đợt
+
+**Bước 1 - Truy vấn cơ bản**
+
+index=finova_auth result=Failed 
+| stats count by src_ip, user
+ 
+ ![chart](picture/day9_4.png)
+ **Bước 2 - Gom theo hành vi - Hoàn thiện Rule**
+ ![passwordFaild](picture/day9_5.png)
+
+ BTVN
+ 
