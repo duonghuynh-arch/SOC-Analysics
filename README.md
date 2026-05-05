@@ -11,7 +11,7 @@
 | [SOC101](./SOC101) | Kiến thức nền tảng  |
 | [SOC102](./SOC102) | Kiến thức nền tảng  |
 | [Cyber Defenders](./Cyber%20Defenders) | Bài tập thực hành |
-| [challenge](./challenge) | Challenges |
+| [challenge](./challenge) | Bài tập thực hành |
 
 ---
 
